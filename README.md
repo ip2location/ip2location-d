@@ -1,9 +1,9 @@
 IP2Location D Library
 =====================
 
-This D library provides a fast lookup of country, region, city, latitude, longitude, ZIP code, time zone, ISP, domain name, connection type, IDD code, area code, weather station code, station name, mcc, mnc, mobile brand, elevation, and usage type from IP address by using IP2Location database. This module uses a file based database available at IP2Location.com. This database simply contains IP blocks as keys, and other information such as country, region, city, latitude, longitude, ZIP code, time zone, ISP, domain name, connection type, IDD code, area code, weather station code, station name, mcc, mnc, mobile brand, elevation, and usage type as values. It supports both IP address in IPv4 and IPv6.
+This D library provides a fast lookup of country, region, city, latitude, longitude, ZIP code, time zone, ISP, domain name, connection type, IDD code, area code, weather station code, station name, mcc, mnc, mobile brand, elevation, and usage type from IP address by using IP2Location database. This library uses a file based database available at IP2Location.com. This database simply contains IP blocks as keys, and other information such as country, region, city, latitude, longitude, ZIP code, time zone, ISP, domain name, connection type, IDD code, area code, weather station code, station name, mcc, mnc, mobile brand, elevation, and usage type as values. It supports both IP address in IPv4 and IPv6.
 
-This module can be used in many types of projects such as:
+This library can be used in many types of projects such as:
 
  - select the geographically closest mirror
  - analyze your web server logs to determine the countries of your visitors
@@ -13,9 +13,9 @@ This module can be used in many types of projects such as:
  - prevent password sharing and abuse of service 
  - geotargeting in advertisement
 
-The database will be updated in monthly basis for the greater accuracy. Free sample DB1 database is available at /samples directory or download it from http://www.ip2location.com/developers.
+The database will be updated in monthly basis for the greater accuracy. Free LITE databases are available at http://lite.ip2location.com/ upon registration.
 
-The complete database is available at http://www.ip2location.com under Premium subscription package.
+The paid databases are available at http://www.ip2location.com under Premium subscription package.
 
 
 Installation
