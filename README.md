@@ -23,10 +23,11 @@ Installation
 
 To install this library using dub:
 
+```
 "dependencies": {
     "ip2location-d": "~master"
 }
-
+```
 
 Example
 =======
