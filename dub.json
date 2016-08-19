@@ -1,7 +1,7 @@
 {
 	"name": "ip2location-d",
 	"description": "IP2Location D Library",
-	"copyright": "Copyright © 2016, IP2Location",
+	"copyright": "Copyright Â© 2016, IP2Location",
 	"homepage": "https://www.ip2location.com/developers/d",
 	"license": "LGPL-3.0",
 	"authors": ["IP2Location"],
