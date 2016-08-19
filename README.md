@@ -13,9 +13,9 @@ This library can be used in many types of projects such as:
  - prevent password sharing and abuse of service 
  - geotargeting in advertisement
 
-The database will be updated in monthly basis for the greater accuracy. Free LITE databases are available at http://lite.ip2location.com/ upon registration.
+The database will be updated in monthly basis for the greater accuracy. Free LITE databases are available at https://lite.ip2location.com/ upon registration.
 
-The paid databases are available at http://www.ip2location.com under Premium subscription package.
+The paid databases are available at https://www.ip2location.com under Premium subscription package.
 
 
 Installation
