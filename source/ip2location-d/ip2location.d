@@ -308,7 +308,7 @@ class ip2location {
 				// check special case where IPv4 address in IPv6 format (::ffff:0.0.0.0 or ::ffff:00:00)
 				if (ipno[0] == 0 && ipno[1] == 0 && ipno[2] == 0 && ipno[3] == 0 && ipno[4] == 0 && ipno[5] == 0 && ipno[6] == 0 && ipno[7] == 0 && ipno[8] == 0 && ipno[9] == 0 && ipno[10] == 255 && ipno[11] == 255) {
 					ipdata.iptype = 4;
-					uint ipno2 = (ipno[12] << 24) + (ipno[12] << 16) + (ipno[12] << 8) + ipno[12];
+					uint ipno2 = (ipno[12] << 24) + (ipno[13] << 16) + (ipno[14] << 8) + ipno[15];
 					ipdata.ipnum = ipno2;
 					if (meta.ipv4indexbaseaddr > 0) {
 						ipdata.ipindex = ((ipno2 >> 16) << 3) + meta.ipv4indexbaseaddr;
