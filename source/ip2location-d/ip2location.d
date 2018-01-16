@@ -75,7 +75,17 @@ const ubyte[25] USAGETYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 protected const string API_VERSION = "8.0.3";
 
 protected const BigInt MAX_IPV4_RANGE = BigInt("4294967295");
-protected const BigInt MAX_IPV6_RANGE = BigInt("340282366920938463463374607431768211455");
+
+version(X86)
+{
+	protected const BigInt MAX_IPV6_RANGE;
+
+	static this()
+	{
+		MAX_IPV6_RANGE = BigInt("340282366920938463463374607431768211455");
+	}
+}
+else protected const BigInt MAX_IPV6_RANGE = BigInt("340282366920938463463374607431768211455");
 
 protected const uint COUNTRYSHORT = 0x00001;
 protected const uint COUNTRYLONG = 0x00002;
