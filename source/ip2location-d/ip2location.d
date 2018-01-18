@@ -72,7 +72,7 @@ const ubyte[25] MOBILEBRAND_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 const ubyte[25] ELEVATION_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 19, 0, 19];
 const ubyte[25] USAGETYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 20];
 
-protected const string API_VERSION = "8.0.3";
+protected const string API_VERSION = "8.0.4";
 
 protected const BigInt MAX_IPV4_RANGE = BigInt("4294967295");
 
