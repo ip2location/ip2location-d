@@ -78,12 +78,18 @@ protected const BigInt MAX_IPV4_RANGE = BigInt("4294967295");
 
 version(X86)
 {
-	protected const BigInt MAX_IPV6_RANGE;
 
-	static this()
+	// CTFE of BigInt only supported since phobos 2.079
+	static if (__VERSION__ < 2079)
 	{
-		MAX_IPV6_RANGE = BigInt("340282366920938463463374607431768211455");
+		protected const BigInt MAX_IPV6_RANGE;
+
+	    static this()
+	    {
+		    MAX_IPV6_RANGE = BigInt("340282366920938463463374607431768211455");
+	    }
 	}
+	else protected const MAX_IPV6_RANGE = BigInt("340282366920938463463374607431768211455");
 }
 else protected const BigInt MAX_IPV6_RANGE = BigInt("340282366920938463463374607431768211455");
 
