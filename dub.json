@@ -4,7 +4,7 @@
 		"IP2Location"
 	],
 	"description": "IP2Location D Library",
-	"homepage": "https://www.ip2location.com/developers/d",
+	"homepage": "https://www.ip2location.com/development-libraries/ip2location/d",
 	"copyright": "Copyright © 2019, IP2Location",
 	"license": "MIT",
 	"targetType": "library"

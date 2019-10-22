@@ -72,7 +72,7 @@ const ubyte[25] MOBILEBRAND_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 const ubyte[25] ELEVATION_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 19, 0, 19];
 const ubyte[25] USAGETYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 20];
 
-protected const string API_VERSION = "8.1.0";
+protected const string API_VERSION = "8.2.0";
 
 version(X86)
 {
@@ -211,6 +211,14 @@ class ip2location {
 		return to!string(stuff);
 	}
 	
+	// read unsigned 32-bit integer from row
+	private uint readuint_row(ref ubyte[] row, uint index) {
+		ubyte[4] buf = row[index .. (index + 4)];
+		uint result = 0;
+		result = littleEndianToNative!uint(buf);
+		return result;
+	}
+	
 	// read unsigned 32-bit integer
 	private uint readuint(uint index) {
 		uint pos = index - 1;
@@ -232,6 +240,14 @@ class ip2location {
 			result += (biggie << (8 * x));
 		}
 		
+		return result;
+	}
+	
+	// read float from row
+	private float readfloat_row(ref ubyte[] row, uint index) {
+		ubyte[4] buf = row[index .. (index + 4)];
+		float result = 0.0;
+		result = littleEndianToNative!float(buf);
 		return result;
 	}
 	
@@ -277,26 +293,47 @@ class ip2location {
 		uint dbt = meta.databasetype;
 		
 		// since both IPv4 and IPv6 use 4 bytes for the below columns, can just do it once here
-		country_position_offset = (COUNTRY_POSITION[dbt] != 0) ? (COUNTRY_POSITION[dbt] - 1) << 2 : 0;
-		region_position_offset = (REGION_POSITION[dbt] != 0) ? (REGION_POSITION[dbt] - 1) << 2 : 0;
-		city_position_offset = (CITY_POSITION[dbt] != 0) ? (CITY_POSITION[dbt] - 1) << 2 : 0;
-		isp_position_offset = (ISP_POSITION[dbt] != 0) ? (ISP_POSITION[dbt] - 1) << 2 : 0;
-		domain_position_offset = (DOMAIN_POSITION[dbt] != 0) ? (DOMAIN_POSITION[dbt] - 1) << 2 : 0;
-		zipcode_position_offset = (ZIPCODE_POSITION[dbt] != 0) ? (ZIPCODE_POSITION[dbt] - 1) << 2 : 0;
-		latitude_position_offset = (LATITUDE_POSITION[dbt] != 0) ? (LATITUDE_POSITION[dbt] - 1) << 2 : 0;
-		longitude_position_offset = (LONGITUDE_POSITION[dbt] != 0) ? (LONGITUDE_POSITION[dbt] - 1) << 2 : 0;
-		timezone_position_offset = (TIMEZONE_POSITION[dbt] != 0) ? (TIMEZONE_POSITION[dbt] - 1) << 2 : 0;
-		netspeed_position_offset = (NETSPEED_POSITION[dbt] != 0) ? (NETSPEED_POSITION[dbt] - 1) << 2 : 0;
-		iddcode_position_offset = (IDDCODE_POSITION[dbt] != 0) ? (IDDCODE_POSITION[dbt] - 1) << 2 : 0;
-		areacode_position_offset = (AREACODE_POSITION[dbt] != 0) ? (AREACODE_POSITION[dbt] - 1) << 2 : 0;
-		weatherstationcode_position_offset = (WEATHERSTATIONCODE_POSITION[dbt] != 0) ? (WEATHERSTATIONCODE_POSITION[dbt] - 1) << 2 : 0;
-		weatherstationname_position_offset = (WEATHERSTATIONNAME_POSITION[dbt] != 0) ? (WEATHERSTATIONNAME_POSITION[dbt] - 1) << 2 : 0;
-		mcc_position_offset = (MCC_POSITION[dbt] != 0) ? (MCC_POSITION[dbt] - 1) << 2 : 0;
-		mnc_position_offset = (MNC_POSITION[dbt] != 0) ? (MNC_POSITION[dbt] - 1) << 2 : 0;
-		mobilebrand_position_offset = (MOBILEBRAND_POSITION[dbt] != 0) ? (MOBILEBRAND_POSITION[dbt] - 1) << 2 : 0;
-		elevation_position_offset = (ELEVATION_POSITION[dbt] != 0) ? (ELEVATION_POSITION[dbt] - 1) << 2 : 0;
-		usagetype_position_offset = (USAGETYPE_POSITION[dbt] != 0) ? (USAGETYPE_POSITION[dbt] - 1) << 2 : 0;
-
+		// country_position_offset = (COUNTRY_POSITION[dbt] != 0) ? (COUNTRY_POSITION[dbt] - 1) << 2 : 0;
+		// region_position_offset = (REGION_POSITION[dbt] != 0) ? (REGION_POSITION[dbt] - 1) << 2 : 0;
+		// city_position_offset = (CITY_POSITION[dbt] != 0) ? (CITY_POSITION[dbt] - 1) << 2 : 0;
+		// isp_position_offset = (ISP_POSITION[dbt] != 0) ? (ISP_POSITION[dbt] - 1) << 2 : 0;
+		// domain_position_offset = (DOMAIN_POSITION[dbt] != 0) ? (DOMAIN_POSITION[dbt] - 1) << 2 : 0;
+		// zipcode_position_offset = (ZIPCODE_POSITION[dbt] != 0) ? (ZIPCODE_POSITION[dbt] - 1) << 2 : 0;
+		// latitude_position_offset = (LATITUDE_POSITION[dbt] != 0) ? (LATITUDE_POSITION[dbt] - 1) << 2 : 0;
+		// longitude_position_offset = (LONGITUDE_POSITION[dbt] != 0) ? (LONGITUDE_POSITION[dbt] - 1) << 2 : 0;
+		// timezone_position_offset = (TIMEZONE_POSITION[dbt] != 0) ? (TIMEZONE_POSITION[dbt] - 1) << 2 : 0;
+		// netspeed_position_offset = (NETSPEED_POSITION[dbt] != 0) ? (NETSPEED_POSITION[dbt] - 1) << 2 : 0;
+		// iddcode_position_offset = (IDDCODE_POSITION[dbt] != 0) ? (IDDCODE_POSITION[dbt] - 1) << 2 : 0;
+		// areacode_position_offset = (AREACODE_POSITION[dbt] != 0) ? (AREACODE_POSITION[dbt] - 1) << 2 : 0;
+		// weatherstationcode_position_offset = (WEATHERSTATIONCODE_POSITION[dbt] != 0) ? (WEATHERSTATIONCODE_POSITION[dbt] - 1) << 2 : 0;
+		// weatherstationname_position_offset = (WEATHERSTATIONNAME_POSITION[dbt] != 0) ? (WEATHERSTATIONNAME_POSITION[dbt] - 1) << 2 : 0;
+		// mcc_position_offset = (MCC_POSITION[dbt] != 0) ? (MCC_POSITION[dbt] - 1) << 2 : 0;
+		// mnc_position_offset = (MNC_POSITION[dbt] != 0) ? (MNC_POSITION[dbt] - 1) << 2 : 0;
+		// mobilebrand_position_offset = (MOBILEBRAND_POSITION[dbt] != 0) ? (MOBILEBRAND_POSITION[dbt] - 1) << 2 : 0;
+		// elevation_position_offset = (ELEVATION_POSITION[dbt] != 0) ? (ELEVATION_POSITION[dbt] - 1) << 2 : 0;
+		// usagetype_position_offset = (USAGETYPE_POSITION[dbt] != 0) ? (USAGETYPE_POSITION[dbt] - 1) << 2 : 0;
+		
+		// offset slightly different when reading by row
+		country_position_offset = (COUNTRY_POSITION[dbt] != 0) ? (COUNTRY_POSITION[dbt] - 2) << 2 : 0;
+		region_position_offset = (REGION_POSITION[dbt] != 0) ? (REGION_POSITION[dbt] - 2) << 2 : 0;
+		city_position_offset = (CITY_POSITION[dbt] != 0) ? (CITY_POSITION[dbt] - 2) << 2 : 0;
+		isp_position_offset = (ISP_POSITION[dbt] != 0) ? (ISP_POSITION[dbt] - 2) << 2 : 0;
+		domain_position_offset = (DOMAIN_POSITION[dbt] != 0) ? (DOMAIN_POSITION[dbt] - 2) << 2 : 0;
+		zipcode_position_offset = (ZIPCODE_POSITION[dbt] != 0) ? (ZIPCODE_POSITION[dbt] - 2) << 2 : 0;
+		latitude_position_offset = (LATITUDE_POSITION[dbt] != 0) ? (LATITUDE_POSITION[dbt] - 2) << 2 : 0;
+		longitude_position_offset = (LONGITUDE_POSITION[dbt] != 0) ? (LONGITUDE_POSITION[dbt] - 2) << 2 : 0;
+		timezone_position_offset = (TIMEZONE_POSITION[dbt] != 0) ? (TIMEZONE_POSITION[dbt] - 2) << 2 : 0;
+		netspeed_position_offset = (NETSPEED_POSITION[dbt] != 0) ? (NETSPEED_POSITION[dbt] - 2) << 2 : 0;
+		iddcode_position_offset = (IDDCODE_POSITION[dbt] != 0) ? (IDDCODE_POSITION[dbt] - 2) << 2 : 0;
+		areacode_position_offset = (AREACODE_POSITION[dbt] != 0) ? (AREACODE_POSITION[dbt] - 2) << 2 : 0;
+		weatherstationcode_position_offset = (WEATHERSTATIONCODE_POSITION[dbt] != 0) ? (WEATHERSTATIONCODE_POSITION[dbt] - 2) << 2 : 0;
+		weatherstationname_position_offset = (WEATHERSTATIONNAME_POSITION[dbt] != 0) ? (WEATHERSTATIONNAME_POSITION[dbt] - 2) << 2 : 0;
+		mcc_position_offset = (MCC_POSITION[dbt] != 0) ? (MCC_POSITION[dbt] - 2) << 2 : 0;
+		mnc_position_offset = (MNC_POSITION[dbt] != 0) ? (MNC_POSITION[dbt] - 2) << 2 : 0;
+		mobilebrand_position_offset = (MOBILEBRAND_POSITION[dbt] != 0) ? (MOBILEBRAND_POSITION[dbt] - 2) << 2 : 0;
+		elevation_position_offset = (ELEVATION_POSITION[dbt] != 0) ? (ELEVATION_POSITION[dbt] - 2) << 2 : 0;
+		usagetype_position_offset = (USAGETYPE_POSITION[dbt] != 0) ? (USAGETYPE_POSITION[dbt] - 2) << 2 : 0;
+		
 		country_enabled = (COUNTRY_POSITION[dbt] != 0) ? true : false;
 		region_enabled = (REGION_POSITION[dbt] != 0) ? true : false;
 		city_enabled = (CITY_POSITION[dbt] != 0) ? true : false;
@@ -580,88 +617,111 @@ class ip2location {
 			}
 			
 			if ((ipno >= ipfrom) && (ipno < ipto)) {
+				uint firstcol = 4; // 4 bytes for ip from
 				if (ipdata.iptype == 6) {
-					rowoffset = rowoffset + 12; // coz below is assuming all columns are 4 bytes, so got 12 left to go to make 16 bytes total
+					firstcol = 16; // 16 bytes for ipv6
+					// rowoffset = rowoffset + 12; // coz below is assuming all columns are 4 bytes, so got 12 left to go to make 16 bytes total
 				}
+				ubyte[] row = cast(ubyte[])db[(rowoffset + firstcol - 1) .. (rowoffset + colsize - 1)];
 				
 				if ((mode & COUNTRYSHORT) && (country_enabled)) {
-					x.country_short = readstr(readuint(rowoffset + country_position_offset));
+					// x.country_short = readstr(readuint(rowoffset + country_position_offset));
+					x.country_short = readstr(readuint_row(row, country_position_offset));
 				}
 				
 				if ((mode & COUNTRYLONG) && (country_enabled)) {
-					x.country_long = readstr(readuint(rowoffset + country_position_offset) + 3);
+					// x.country_long = readstr(readuint(rowoffset + country_position_offset) + 3);
+					x.country_long = readstr(readuint_row(row, country_position_offset) + 3);
 				}
 				
 				if ((mode & REGION) && (region_enabled)) {
-					x.region = readstr(readuint(rowoffset + region_position_offset));
+					// x.region = readstr(readuint(rowoffset + region_position_offset));
+					x.region = readstr(readuint_row(row, region_position_offset));
 				}
 				
 				if ((mode & CITY) && (city_enabled)) {
-					x.city = readstr(readuint(rowoffset + city_position_offset));
+					// x.city = readstr(readuint(rowoffset + city_position_offset));
+					x.city = readstr(readuint_row(row, city_position_offset));
 				}
 				
 				if ((mode & ISP) && (isp_enabled)) {
-					x.isp = readstr(readuint(rowoffset + isp_position_offset));
+					// x.isp = readstr(readuint(rowoffset + isp_position_offset));
+					x.isp = readstr(readuint_row(row, isp_position_offset));
 				}
 				
 				if ((mode & LATITUDE) && (latitude_enabled)) {
-					x.latitude = readfloat(rowoffset + latitude_position_offset);
+					// x.latitude = readfloat(rowoffset + latitude_position_offset);
+					x.latitude = readfloat_row(row, latitude_position_offset);
 				}
 				
 				if ((mode & LONGITUDE) && (longitude_enabled)) {
-					x.longitude = readfloat(rowoffset + longitude_position_offset);
+					// x.longitude = readfloat(rowoffset + longitude_position_offset);
+					x.longitude = readfloat_row(row, longitude_position_offset);
 				}
 				
 				if ((mode & DOMAIN) && (domain_enabled)) {
-					x.domain = readstr(readuint(rowoffset + domain_position_offset));
+					// x.domain = readstr(readuint(rowoffset + domain_position_offset));
+					x.domain = readstr(readuint_row(row, domain_position_offset));
 				}
 				
 				if ((mode & ZIPCODE) && (zipcode_enabled)) {
-					x.zipcode = readstr(readuint(rowoffset + zipcode_position_offset));
+					// x.zipcode = readstr(readuint(rowoffset + zipcode_position_offset));
+					x.zipcode = readstr(readuint_row(row, zipcode_position_offset));
 				}
 				
 				if ((mode & TIMEZONE) && (timezone_enabled)) {
-					x.timezone = readstr(readuint(rowoffset + timezone_position_offset));
+					// x.timezone = readstr(readuint(rowoffset + timezone_position_offset));
+					x.timezone = readstr(readuint_row(row, timezone_position_offset));
 				}
 				
 				if ((mode & NETSPEED) && (netspeed_enabled)) {
-					x.netspeed = readstr(readuint(rowoffset + netspeed_position_offset));
+					// x.netspeed = readstr(readuint(rowoffset + netspeed_position_offset));
+					x.netspeed = readstr(readuint_row(row, netspeed_position_offset));
 				}
 				
 				if ((mode & IDDCODE) && (iddcode_enabled)) {
-					x.iddcode = readstr(readuint(rowoffset + iddcode_position_offset));
+					// x.iddcode = readstr(readuint(rowoffset + iddcode_position_offset));
+					x.iddcode = readstr(readuint_row(row, iddcode_position_offset));
 				}
 				
 				if ((mode & AREACODE) && (areacode_enabled)) {
-					x.areacode = readstr(readuint(rowoffset + areacode_position_offset));
+					// x.areacode = readstr(readuint(rowoffset + areacode_position_offset));
+					x.areacode = readstr(readuint_row(row, areacode_position_offset));
 				}
 				
 				if ((mode & WEATHERSTATIONCODE) && (weatherstationcode_enabled)) {
-					x.weatherstationcode = readstr(readuint(rowoffset + weatherstationcode_position_offset));
+					// x.weatherstationcode = readstr(readuint(rowoffset + weatherstationcode_position_offset));
+					x.weatherstationcode = readstr(readuint_row(row, weatherstationcode_position_offset));
 				}
 				
 				if ((mode & WEATHERSTATIONNAME) && (weatherstationname_enabled)) {
-					x.weatherstationname = readstr(readuint(rowoffset + weatherstationname_position_offset));
+					// x.weatherstationname = readstr(readuint(rowoffset + weatherstationname_position_offset));
+					x.weatherstationname = readstr(readuint_row(row, weatherstationname_position_offset));
 				}
 				
 				if ((mode & MCC) && (mcc_enabled)) {
-					x.mcc = readstr(readuint(rowoffset + mcc_position_offset));
+					// x.mcc = readstr(readuint(rowoffset + mcc_position_offset));
+					x.mcc = readstr(readuint_row(row, mcc_position_offset));
 				}
 				
 				if ((mode & MNC) && (mnc_enabled)) {
-					x.mnc = readstr(readuint(rowoffset + mnc_position_offset));
+					// x.mnc = readstr(readuint(rowoffset + mnc_position_offset));
+					x.mnc = readstr(readuint_row(row, mnc_position_offset));
 				}
 				
 				if ((mode & MOBILEBRAND) && (mobilebrand_enabled)) {
-					x.mobilebrand = readstr(readuint(rowoffset + mobilebrand_position_offset));
+					// x.mobilebrand = readstr(readuint(rowoffset + mobilebrand_position_offset));
+					x.mobilebrand = readstr(readuint_row(row, mobilebrand_position_offset));
 				}
 				
 				if ((mode & ELEVATION) && (elevation_enabled)) {
-					x.elevation = to!float(readstr(readuint(rowoffset + elevation_position_offset)));
+					// x.elevation = to!float(readstr(readuint(rowoffset + elevation_position_offset)));
+					x.elevation = to!float(readstr(readuint_row(row, elevation_position_offset)));
 				}
 				
 				if ((mode & USAGETYPE) && (usagetype_enabled)) {
-					x.usagetype = readstr(readuint(rowoffset + usagetype_position_offset));
+					// x.usagetype = readstr(readuint(rowoffset + usagetype_position_offset));
+					x.usagetype = readstr(readuint_row(row, usagetype_position_offset));
 				}
 				
 				return x;
