@@ -72,7 +72,7 @@ const ubyte[25] MOBILEBRAND_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 const ubyte[25] ELEVATION_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11, 19, 0, 19];
 const ubyte[25] USAGETYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 20];
 
-protected const string API_VERSION = "8.2.0";
+protected const string API_VERSION = "8.3.0";
 
 version(X86)
 {
@@ -262,6 +262,14 @@ class ip2location {
 		
 		result = littleEndianToNative!float(fl);
 		return result;
+	}
+	
+	// close connection and reset
+	public void close() {
+		binfile = "";
+		db.destroy();
+		meta.destroy();
+		metaok = false;
 	}
 	
 	// read BIN file metadata
