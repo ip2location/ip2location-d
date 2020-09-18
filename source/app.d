@@ -28,5 +28,6 @@ int main() {
 	writeln("usagetype: ", results.usagetype);
 	
 	writeln("API Version: ", ip2loc.api_version());
+	ip2loc.close();
 	return 0;
 }
