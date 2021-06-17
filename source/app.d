@@ -1,8 +1,8 @@
 import std.stdio;
-import ip2location;
+import ip2location : ip2location;
 
 int main() {
-	string db = "./IPV6-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE.BIN";
+	string db = "./IPV6-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE-ADDRESSTYPE-CATEGORY.BIN";
 	ip2location ip2loc = new ip2location(db);
 	auto results = ip2loc.get_all("8.8.8.8");
 	
@@ -26,6 +26,8 @@ int main() {
 	writeln("mobilebrand: ", results.mobilebrand);
 	writefln("elevation: %f", results.elevation);
 	writeln("usagetype: ", results.usagetype);
+	writeln("addresstype: ", results.addresstype);
+	writeln("category: ", results.category);
 	
 	writeln("API Version: ", ip2loc.api_version());
 	ip2loc.close();
