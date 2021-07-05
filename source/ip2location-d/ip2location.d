@@ -20,8 +20,8 @@ protected struct ip2locationmeta {
 	uint ipv6indexbaseaddr;
 	uint ipv4columnsize;
 	uint ipv6columnsize;
-	uint productcode;
-	uint producttype;
+	ubyte productcode;
+	ubyte producttype;
 	uint filesize;
 }
 
@@ -78,7 +78,7 @@ const ubyte[26] USAGETYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 const ubyte[26] ADDRESSTYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21];
 const ubyte[26] CATEGORY_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22];
 
-protected const string API_VERSION = "8.4.0";
+protected const string API_VERSION = "8.4.1";
 
 version(X86)
 {
@@ -295,10 +295,10 @@ class ip2location {
 		meta.ipv6databaseaddr =  readuint(18);
 		meta.ipv4indexbaseaddr =  readuint(22);
 		meta.ipv6indexbaseaddr =  readuint(26);
-		meta.productcode = db[30];
+		meta.productcode = db[29];
 		// below 2 fields just read for now, not being used yet
-		meta.producttype = readuint(31);
-		meta.filesize = readuint(332);
+		meta.producttype = db[30];
+		meta.filesize = readuint(32);
 		
 		// check if is correct BIN (should be 1 for IP2Location BIN file), also checking for zipped file (PK being the first 2 chars)
 		if ((meta.productcode != 1 && meta.databaseyear >= 21) || (meta.databasetype == 80 && meta.databasecolumn == 75)) { // only BINs from Jan 2021 onwards have this byte set
