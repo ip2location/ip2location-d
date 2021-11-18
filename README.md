@@ -16,7 +16,7 @@ The database will be updated on a monthly basis for greater accuracy. Free LITE 
 
 The paid databases are available at https://www.ip2location.com under Premium subscription package.
 
-As an alternative, this module can also call the IP2Location Web Service. This requires an API key. If you don't have an existing API key, you can subscribe for one at the below:
+As an alternative, this library can also call the IP2Location Web Service. This requires an API key. If you don't have an existing API key, you can subscribe for one at the below:
 
 https://www.ip2location.com/web-service/ip2location
 
