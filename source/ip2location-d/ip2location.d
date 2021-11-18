@@ -78,7 +78,7 @@ const ubyte[26] USAGETYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 const ubyte[26] ADDRESSTYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21];
 const ubyte[26] CATEGORY_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 22];
 
-protected const string API_VERSION = "8.4.1";
+protected const string API_VERSION = "8.5.0";
 
 version(X86)
 {
