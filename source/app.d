@@ -5,7 +5,7 @@ import std.json;
 
 int main() {
 	// Query using BIN file
-	string db = "./IPV6-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE-ADDRESSTYPE-CATEGORY.BIN";
+	string db = "./IPV6-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ZIPCODE-TIMEZONE-ISP-DOMAIN-NETSPEED-AREACODE-WEATHER-MOBILE-ELEVATION-USAGETYPE-ADDRESSTYPE-CATEGORY-DISTRICT-ASN.BIN";
 	ip2location ip2loc = new ip2location(db);
 	auto results = ip2loc.get_all("8.8.8.8");
 	
@@ -31,6 +31,9 @@ int main() {
 	writeln("usagetype: ", results.usagetype);
 	writeln("addresstype: ", results.addresstype);
 	writeln("category: ", results.category);
+	writeln("district: ", results.district);
+	writeln("asn: ", results.asn);
+	writeln("as: ", results.as);
 	
 	writeln("API Version: ", ip2loc.api_version());
 	ip2loc.close();
