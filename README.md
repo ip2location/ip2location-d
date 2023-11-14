@@ -19,6 +19,8 @@ The paid databases are available at https://www.ip2location.com under Premium su
 As an alternative, this library can also call the IP2Location Web Service. This requires an API key. If you don't have an existing API key, you can subscribe for one at the below:
 
 https://www.ip2location.com/web-service/ip2location
+
+
 Developer Documentation
 =====================
 
