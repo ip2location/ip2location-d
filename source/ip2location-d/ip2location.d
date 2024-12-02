@@ -86,7 +86,7 @@ const ubyte[27] DISTRICT_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 const ubyte[27] ASN_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24];
 const ubyte[27] AS_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25];
 
-protected const string API_VERSION = "8.7.0";
+protected const string API_VERSION = "8.7.1";
 
 version(X86)
 {
@@ -164,6 +164,7 @@ protected const string INVALID_ADDRESS = "Invalid IP address.";
 protected const string MISSING_FILE = "Invalid database file.";
 protected const string NOT_SUPPORTED = "This parameter is unavailable for selected data file. Please upgrade the data file.";
 protected const string INVALID_BIN = "Incorrect IP2Location BIN file format. Please make sure that you are using the latest IP2Location BIN file.";
+protected const string IPV6_NOT_SUPPORTED = "IPv6 address missing in IPv4 BIN.";
 
 class ip2location {
 	protected MmFile db;
@@ -676,6 +677,10 @@ class ip2location {
 			colsize = meta.ipv4columnsize;
 		}
 		else {
+			if (meta.ipv6databasecount == 0) {
+				x = loadmessage(IPV6_NOT_SUPPORTED);
+				return x;
+			}
 			firstcol = 16; // 16 bytes for ipv6
 			baseaddr = meta.ipv6databaseaddr;
 			high = meta.ipv6databasecount;
