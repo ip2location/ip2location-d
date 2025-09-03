@@ -59,6 +59,9 @@ int main() {
 	writeln("district: ", results.district);
 	writeln("asn: ", results.asn);
 	writeln("as: ", results.as);
+	writeln("asdomain: ", results.asdomain);
+	writeln("asusagetype: ", results.asusagetype);
+	writeln("ascidr: ", results.ascidr);
 	
 	writeln("API Version: ", ip2loc.api_version());
 	ip2loc.close();

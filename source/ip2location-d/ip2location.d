@@ -53,6 +53,9 @@ protected struct ip2locationrecord {
 	string district = "-";
 	string asn = "-";
 	string as = "-";
+	string asdomain = "-";
+	string asusagetype = "-";
+	string ascidr = "-";
 }
 
 protected struct ipv {
@@ -85,8 +88,11 @@ const ubyte[27] CATEGORY_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 const ubyte[27] DISTRICT_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 23];
 const ubyte[27] ASN_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24];
 const ubyte[27] AS_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 25];
+const ubyte[27] ASDOMAIN_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 26];
+const ubyte[27] ASUSAGETYPE_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 27];
+const ubyte[27] ASCIDR_POSITION = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 28];
 
-protected const string API_VERSION = "8.7.1";
+protected const string API_VERSION = "8.8.0";
 
 version(X86)
 {
@@ -157,8 +163,11 @@ protected const uint CATEGORY = 0x0200000;
 protected const uint DISTRICT = 0x0400000;
 protected const uint ASN = 0x0800000;
 protected const uint AS = 0x1000000;
+protected const uint ASDOMAIN = 0x2000000;
+protected const uint ASUSAGETYPE = 0x4000000;
+protected const uint ASCIDR = 0x8000000;
 
-protected const uint ALL = COUNTRYSHORT | COUNTRYLONG | REGION | CITY | ISP | LATITUDE | LONGITUDE | DOMAIN | ZIPCODE | TIMEZONE | NETSPEED | IDDCODE | AREACODE | WEATHERSTATIONCODE | WEATHERSTATIONNAME | MCC | MNC | MOBILEBRAND | ELEVATION | USAGETYPE | ADDRESSTYPE | CATEGORY | DISTRICT | ASN | AS;
+protected const uint ALL = COUNTRYSHORT | COUNTRYLONG | REGION | CITY | ISP | LATITUDE | LONGITUDE | DOMAIN | ZIPCODE | TIMEZONE | NETSPEED | IDDCODE | AREACODE | WEATHERSTATIONCODE | WEATHERSTATIONNAME | MCC | MNC | MOBILEBRAND | ELEVATION | USAGETYPE | ADDRESSTYPE | CATEGORY | DISTRICT | ASN | AS | ASDOMAIN | ASUSAGETYPE | ASCIDR;
 
 protected const string INVALID_ADDRESS = "Invalid IP address.";
 protected const string MISSING_FILE = "Invalid database file.";
@@ -196,6 +205,9 @@ class ip2location {
 	private uint district_position_offset;
 	private uint asn_position_offset;
 	private uint as_position_offset;
+	private uint asdomain_position_offset;
+	private uint asusagetype_position_offset;
+	private uint ascidr_position_offset;
 	
 	private bool country_enabled;
 	private bool region_enabled;
@@ -221,6 +233,9 @@ class ip2location {
 	private bool district_enabled;
 	private bool asn_enabled;
 	private bool as_enabled;
+	private bool asdomain_enabled;
+	private bool asusagetype_enabled;
+	private bool ascidr_enabled;
 	
 	// constructor
 	public this(const string binpath) {
@@ -377,6 +392,9 @@ class ip2location {
 		district_position_offset = (DISTRICT_POSITION[dbt] != 0) ? (DISTRICT_POSITION[dbt] - 2) << 2 : 0;
 		asn_position_offset = (ASN_POSITION[dbt] != 0) ? (ASN_POSITION[dbt] - 2) << 2 : 0;
 		as_position_offset = (AS_POSITION[dbt] != 0) ? (AS_POSITION[dbt] - 2) << 2 : 0;
+		asdomain_position_offset = (ASDOMAIN_POSITION[dbt] != 0) ? (ASDOMAIN_POSITION[dbt] - 2) << 2 : 0;
+		asusagetype_position_offset = (ASUSAGETYPE_POSITION[dbt] != 0) ? (ASUSAGETYPE_POSITION[dbt] - 2) << 2 : 0;
+		ascidr_position_offset = (ASCIDR_POSITION[dbt] != 0) ? (ASCIDR_POSITION[dbt] - 2) << 2 : 0;
 		
 		country_enabled = (COUNTRY_POSITION[dbt] != 0);
 		region_enabled = (REGION_POSITION[dbt] != 0);
@@ -402,6 +420,9 @@ class ip2location {
 		district_enabled = (DISTRICT_POSITION[dbt] != 0);
 		asn_enabled = (ASN_POSITION[dbt] != 0);
 		as_enabled = (AS_POSITION[dbt] != 0);
+		asdomain_enabled = (ASDOMAIN_POSITION[dbt] != 0);
+		asusagetype_enabled = (ASUSAGETYPE_POSITION[dbt] != 0);
+		ascidr_enabled = (ASCIDR_POSITION[dbt] != 0);
 		
 		metaok = true;
 	}
@@ -630,9 +651,24 @@ class ip2location {
 		return query(ipaddress, ASN);
 	}
 	
-	// get Autonomous System
+	// get Autonomous System (AS)
 	public ip2locationrecord get_as(const string ipaddress) {
 		return query(ipaddress, AS);
+	}
+	
+	// get AS domain
+	public ip2locationrecord get_asdomain(const string ipaddress) {
+		return query(ipaddress, ASDOMAIN);
+	}
+	
+	// get AS usage type
+	public ip2locationrecord get_asusagetype(const string ipaddress) {
+		return query(ipaddress, ASUSAGETYPE);
+	}
+	
+	// get AS CIDR
+	public ip2locationrecord get_ascidr(const string ipaddress) {
+		return query(ipaddress, ASCIDR);
 	}
 	
 	// main query
@@ -822,6 +858,18 @@ class ip2location {
 				
 				if ((mode & AS) && (as_enabled)) {
 					x.as = readstr(readuint_row(row, as_position_offset));
+				}
+				
+				if ((mode & ASDOMAIN) && (asdomain_enabled)) {
+					x.asdomain = readstr(readuint_row(row, asdomain_position_offset));
+				}
+				
+				if ((mode & ASUSAGETYPE) && (asusagetype_enabled)) {
+					x.asusagetype = readstr(readuint_row(row, asusagetype_position_offset));
+				}
+				
+				if ((mode & ASCIDR) && (ascidr_enabled)) {
+					x.ascidr = readstr(readuint_row(row, ascidr_position_offset));
 				}
 				
 				return x;
